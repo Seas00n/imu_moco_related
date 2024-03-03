@@ -1,0 +1,6 @@
+<launch>
+    <node pkg = "hps_moco" type = "imu_.py" name = "imu_right_shank" args="right_shank" output="screen" respawn_delay="0"/>
+    <node pkg = "hps_moco" type = "imu_.py" name = "imu_right_foot" args="right_foot" output="screen" respawn_delay="5"/>
+    <node pkg = "hps_moco" type = "imu_.py" name = "imu_left_shank" args="left_shank" output="screen" respawn_delay="10"/>
+    <node pkg = "hps_moco" type = "imu_.py" name = "imu_left_foot" args="left_foot" output="screen" respawn_delay="15"/>
+</launch>

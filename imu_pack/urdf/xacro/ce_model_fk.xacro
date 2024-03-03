@@ -1,0 +1,432 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="touch_centric">
+    <xacro:property name="PI" value="3.14115926" />
+    <xacro:property name="mass" value="67" />
+    <xacro:property name="height" value="1.78" />
+    <xacro:property name="ref_mass" value="73" />
+    <xacro:property name="ref_height" value="1.741" />
+    <xacro:property name="foot_length" value="0.24" />
+    <xacro:property name="shank_length" value="0.4" />
+    <xacro:property name="thigh_length" value="0.4" />
+    <xacro:property name="trunk_length" value="0.7" />
+    <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0" />
+    </material>
+    <material name="blue">
+        <color rgba="0.0 0.0 0.8 1.0" />
+    </material>
+    <material name="green">
+        <color rgba="0.0 0.8 0.0 1.0" />
+    </material>
+    <material name="gray">
+        <color rgba="0.2 0.2 0.2 1.0" />
+    </material>
+    <material name="silver">
+        <color rgba="0.9137254901960784 0.9137254901960784 0.8470588235294118 1.0" />
+    </material>
+    <material name="orange">
+        <color rgba="1.0 0.4235294117647059 0.0392156862745098 1.0" />
+    </material>
+    <material name="brown">
+        <color rgba="0.8705882352941177 0.8117647058823529 0.7647058823529411 1.0" />
+    </material>
+    <material name="red">
+        <color rgba="0.8 0.0 0.0 1.0" />
+    </material>
+    <material name="white">
+        <color rgba="1.0 1.0 1.0 1.0" />
+    </material>
+    <link name="base_link">
+        <visual>
+            <origin rpy="0 0 0" xyz=" 0 0 0" />
+            <geometry>
+                <box size="0.2 0.35 ${trunk_length}" />
+            </geometry>
+            <material name="gray" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <box size="0.1 0.175 ${0.5*trunk_length}" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="trunk_inertia">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+        <inertial>
+            <mass value="${0.4346*mass}" />
+            <origin rpy="0 0 0" xyz="0 0 ${(0.5-0.4486)*trunk_length}" />
+            <inertia ixx="${0.4346*mass*0.372*(trunk_length)*0.372*(trunk_length)}" ixy="0" ixz="0" iyy="${0.4346*mass*0.347*(trunk_length)*0.347*(trunk_length)}" iyz="0" izz="${0.4346*mass*0.191*(trunk_length)*0.191*(trunk_length)}" />
+        </inertial>
+    </link>
+    <joint name="trunk_inertia_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <parent link="base_link" />
+        <child link="trunk_inertia" />
+    </joint>
+    <link name="thigh_right">
+        <visual>
+            <origin rpy="0 0 0" xyz=" 0 0 ${-0.5*thigh_length}" />
+            <geometry>
+                <box size="0.1 0.1 ${thigh_length}" />
+            </geometry>
+            <material name="red" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 ${-0.5*thigh_length}" />
+            <geometry>
+                <box size="0.05 0.05 ${0.5*thigh_length}" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${0.1416*mass}" />
+            <origin rpy="0 0 0" xyz="0 0 ${-0.4095*thigh_length}" />
+            <inertia ixx="${0.1416*mass*0.329*(thigh_length)*0.329*(thigh_length)}" ixy="0" ixz="0" iyy="${0.1416*mass*0.329*(thigh_length)*0.329*(thigh_length)}" iyz="0" izz="${0.1416*mass*0.149*(thigh_length)*0.149*(thigh_length)}" />
+        </inertial>
+    </link>
+    <joint name="hip_right" type="revolute">
+        <origin rpy="0 0 0" xyz="0 -0.15 ${-0.5*trunk_length}" />
+        <parent link="base_link" />
+        <child link="thigh_right" />
+        <axis xyz="0 1 0" />
+        <limit effort="0" lower="-1.57" upper="0.523" velocity="21" />
+    </joint>
+    <link name="shank_right">
+        <visual>
+            <origin rpy="0 0 0" xyz=" 0 0 ${-0.5*shank_length}" />
+            <geometry>
+                <box size="0.1 0.1 ${shank_length}" />
+            </geometry>
+            <material name="blue" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 ${-0.5*shank_length}" />
+            <geometry>
+                <box size="0.05 0.05 ${0.5*shank_length}" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${0.0433*mass}" />
+            <origin rpy="0 0 0" xyz="0 0 ${-0.4459*shank_length}" />
+            <inertia ixx="${0.0433*mass*0.255*(shank_length)*0.255*(shank_length)}" ixy="0" ixz="0" iyy="${0.0433*mass*0.249*(shank_length)*0.249*(shank_length)}" iyz="0" izz="${0.0433*mass*0.103*(shank_length)*0.103*(shank_length)}" />
+        </inertial>
+    </link>
+    <joint name="knee_right" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 ${-thigh_length}" />
+        <parent link="thigh_right" />
+        <child link="shank_right" />
+        <axis xyz="0 1 0" />
+        <limit effort="0" lower="0" upper="2.35" velocity="21" />
+    </joint>
+    <link name="foot_right">
+        <visual>
+            <origin rpy="0 0 0" xyz="${0.5*foot_length} 0 -0.025" />
+            <geometry>
+                <box size="${foot_length} 0.1 0.05" />
+            </geometry>
+            <material name="blue" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="${0.5*foot_length} 0 -0.025" />
+            <geometry>
+                <box size="${0.5*foot_length} 0.05 0.025" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${0.0137*mass}" />
+            <origin rpy="0 0 0" xyz="${0.4415*foot_length} 0 -0.025" />
+            <inertia ixx="${0.0137*mass*0.124*(foot_length)*0.124*(foot_length)}" ixy="0" ixz="0" iyy="${0.0137*mass*0.245*(foot_length)*0.245*(foot_length)}" iyz="0" izz="${0.0137*mass*0.257*(foot_length)*0.257*(foot_length)}" />
+        </inertial>
+    </link>
+    <joint name="ankle_right" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 ${-shank_length}" />
+        <parent link="shank_right" />
+        <child link="foot_right" />
+        <axis xyz="0 1 0" />
+        <limit effort="0" lower="-0.78" upper="0.78" velocity="21" />
+    </joint>
+
+    <link name="thigh_left">
+        <visual>
+            <origin rpy="0 0 0" xyz=" 0 0 ${-0.5*thigh_length}" />
+            <geometry>
+                <box size="0.1 0.1 ${thigh_length}" />
+            </geometry>
+            <material name="red" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 ${-0.5*thigh_length}" />
+            <geometry>
+                <box size="0.05 0.05 ${0.5*thigh_length}" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${0.1416*mass}" />
+            <origin rpy="0 0 0" xyz="0 0 ${-0.4095*thigh_length}" />
+            <inertia ixx="${0.1416*mass*0.329*(thigh_length)*0.329*(thigh_length)}" ixy="0" ixz="0" iyy="${0.1416*mass*0.329*(thigh_length)*0.329*(thigh_length)}" iyz="0" izz="${0.1416*mass*0.149*(thigh_length)*0.149*(thigh_length)}" />
+        </inertial>
+    </link>
+    <joint name="hip_left" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0.15 ${-0.5*trunk_length}" />
+        <parent link="base_link" />
+        <child link="thigh_left" />
+        <axis xyz="0 1 0" />
+        <limit effort="0" lower="-1.57" upper="0.523" velocity="21" />
+    </joint>
+    <link name="shank_left">
+        <visual>
+            <origin rpy="0 0 0" xyz=" 0 0 ${-0.5*shank_length}" />
+            <geometry>
+                <box size="0.1 0.1 ${shank_length}" />
+            </geometry>
+            <material name="blue" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 ${-0.5*shank_length}" />
+            <geometry>
+                <box size="0.05 0.05 ${0.5*shank_length}" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${0.0433*mass}" />
+            <origin rpy="0 0 0" xyz="0 0 ${-0.4459*shank_length}" />
+            <inertia ixx="${0.0433*mass*0.255*(shank_length)*0.255*(shank_length)}" ixy="0" ixz="0" iyy="${0.0433*mass*0.249*(shank_length)*0.249*(shank_length)}" iyz="0" izz="${0.0433*mass*0.103*(shank_length)*0.103*(shank_length)}" />
+        </inertial>
+    </link>
+    <joint name="knee_left" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 ${-thigh_length}" />
+        <parent link="thigh_left" />
+        <child link="shank_left" />
+        <axis xyz="0 1 0" />
+        <limit effort="0" lower="0" upper="2.35" velocity="21" />
+    </joint>
+    <link name="foot_left">
+        <visual>
+            <origin rpy="0 0 0" xyz="${0.5*foot_length} 0 -0.025" />
+            <geometry>
+                <box size="${foot_length} 0.1 0.05" />
+            </geometry>
+            <material name="blue" />
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="${0.5*foot_length} 0 -0.025" />
+            <geometry>
+                <box size="${0.5*foot_length} 0.05 0.025" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${0.0137*mass}" />
+            <origin rpy="0 0 0" xyz="${0.4415*foot_length} 0 -0.025" />
+            <inertia ixx="${0.0137*mass*0.124*(foot_length)*0.124*(foot_length)}" ixy="0" ixz="0" iyy="${0.0137*mass*0.245*(foot_length)*0.245*(foot_length)}" iyz="0" izz="${0.0137*mass*0.257*(foot_length)*0.257*(foot_length)}" />
+        </inertial>
+    </link>
+    <joint name="ankle_left" type="revolute">
+        <origin rpy="0 0 0" xyz="0 0 ${-shank_length}" />
+        <parent link="shank_left" />
+        <child link="foot_left" />
+        <axis xyz="0 1 0" />
+        <limit effort="0" lower="-0.78" upper="0.78" velocity="21" />
+    </joint>
+    <link name="thigh_right_com">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="thigh_right_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 ${-0.4095*thigh_length}" />
+        <parent link="thigh_right" />
+        <child link="thigh_right_com" />
+    </joint>
+    <link name="shank_right_com">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="shank_right_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 ${-0.4459*shank_length}" />
+        <parent link="shank_right" />
+        <child link="shank_right_com" />
+    </joint>
+     <link name="foot_right_com">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="foot_right_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="${0.4415*foot_length} 0 -0.025" />
+        <parent link="foot_right" />
+        <child link="foot_right_com" />
+    </joint>
+    <link name="thigh_left_com">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="thigh_left_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 ${-0.4095*thigh_length}" />
+        <parent link="thigh_left" />
+        <child link="thigh_left_com" />
+    </joint>
+    <link name="shank_left_com">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="shank_left_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 ${-0.4459*shank_length}" />
+        <parent link="shank_left" />
+        <child link="shank_left_com" />
+    </joint>
+     <link name="foot_left_com">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <sphere radius="0.02" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="foot_left_fixed" type="fixed">
+        <origin rpy="0 0 0" xyz="${0.4415*foot_length} 0 -0.025" />
+        <parent link="foot_left" />
+        <child link="foot_left_com" />
+    </joint>
+    
+    <link name="foot_right_contact0">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<link name="foot_right_contact1">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<link name="foot_right_contact2">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<link name="foot_right_contact3">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<joint name="foot_right_contact0_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${1*foot_length} 0.05 -0.05" />
+    <parent link="foot_right" />
+    <child link="foot_right_contact0" />
+</joint>
+<joint name="foot_right_contact1_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${1*foot_length} -0.05 -0.05" />
+    <parent link="foot_right" />
+    <child link="foot_right_contact1" />
+</joint>
+<joint name="foot_right_contact2_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${0*foot_length} -0.05 -0.05" />
+    <parent link="foot_right" />
+    <child link="foot_right_contact2" />
+</joint>
+<joint name="foot_right_contact3_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${0*foot_length} 0.05 -0.05" />
+    <parent link="foot_right" />
+    <child link="foot_right_contact3" />
+</joint>
+<link name="foot_left_contact0">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<link name="foot_left_contact1">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<link name="foot_left_contact2">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<link name="foot_left_contact3">
+<visual>
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <geometry>
+        <sphere radius="0.01" />
+    </geometry>
+    <material name="orange" />
+</visual>
+</link>
+<joint name="foot_left_contact0_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${1*foot_length} 0.05 -0.05" />
+    <parent link="foot_left" />
+    <child link="foot_left_contact0" />
+</joint>
+<joint name="foot_left_contact1_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${1*foot_length} -0.05 -0.05" />
+    <parent link="foot_left" />
+    <child link="foot_left_contact1" />
+</joint>
+<joint name="foot_left_contact2_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${0*foot_length} -0.05 -0.05" />
+    <parent link="foot_left" />
+    <child link="foot_left_contact2" />
+</joint>
+<joint name="foot_left_contact3_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="${0*foot_length} 0.05 -0.05" />
+    <parent link="foot_left" />
+    <child link="foot_left_contact3" />
+</joint>
+</robot>

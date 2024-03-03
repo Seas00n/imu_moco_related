@@ -1,0 +1,5 @@
+<launch>
+    <node pkg = "hps_moco" type = "imu_serial.py" name = "imu_trunk" args="trunk /dev/ttyUSB0" output="screen"/>
+    <node pkg = "hps_moco" type = "imu_serial.py" name = "imu_left_thigh" args="left_thigh /dev/ttyUSB1" output="screen"/>
+    <node pkg = "hps_moco" type = "imu_serial.py" name = "imu_right_thigh" args="right_thigh /dev/ttyUSB2" output="screen"/>
+</launch>
