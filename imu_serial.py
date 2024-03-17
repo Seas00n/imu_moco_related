@@ -7,7 +7,7 @@ import rospy
 # 设置正确的串口参数------------------------
 ser_port = sys.argv[2]     #此处需要替换为对应使用的串口号，windows系统写成COMx，若是linux则要根据所用系统进行调整如写成/dev/ttyUSBx或/dev/ttySx
 # ser_port = "/dev/ttyUSB0"
-ser_baudrate = 115200 # 串口波特率
+ser_baudrate = 460800 # 串口波特率
 
 ser_timeout = 10 # specify your timeout here
 # Open the serial port
